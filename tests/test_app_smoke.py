@@ -40,3 +40,29 @@ class AppSmokeTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+    def test_scratchpad_expander_is_on_the_question_page(self):
+        at = self._run_latex_quiz()
+        self.assertFalse(at.exception)
+        labels = [e.label for e in at.expander]
+        self.assertTrue(any("Kaavaeditori" in label for label in labels))
+
+    def test_scratchpad_stays_available_after_answering(self):
+        at = self._run_latex_quiz()
+        at.radio[0].set_value(0).run()
+        at.button[0].click().run()
+        self.assertFalse(at.exception)
+        self.assertTrue(any("Kaavaeditori" in e.label for e in at.expander))
+
+    def test_scratchpad_id_is_stable_across_questions(self):
+        at = self._run_latex_quiz()
+        first = at.session_state["scratchpad_id"]
+        at.radio[0].set_value(0).run()
+        at.button[0].click().run()
+        at.button[0].click().run()
+        self.assertEqual(at.session_state["q_index"], 1)
+        self.assertEqual(at.session_state["scratchpad_id"], first)
+
+    def test_picker_has_no_scratchpad(self):
+        at = AppTest.from_file(str(ROOT / "app.py"), default_timeout=30).run()
+        self.assertFalse(any("Kaavaeditori" in e.label for e in at.expander))

@@ -29,8 +29,8 @@ Open the URL Streamlit prints (defaults to http://localhost:8501). A sample quiz
 OpettajaBotti/
 ├── MASTER_PROMPT.md   # prompt you give Claude to turn slides into quiz JSON
 ├── app.py             # the Streamlit quiz app
-├── quiz_schema.py      # quiz JSON loader/validator
 ├── latex_support.py   # normalizes LaTeX delimiters for rendering
+├── math_scratchpad.py # embedded formula editor (kaavaeditori)
 ├── quiz_schema.py     # quiz JSON loader/validator
 ├── requirements.txt
 ├── tests/             # unit tests (`.venv/bin/python -m unittest discover -s tests`)
@@ -77,3 +77,18 @@ JSON renders as the fraction. See `quizzes/example_latex_quiz.json` for a workin
 - A malformed quiz JSON file shows a clear validation error in the app's quiz picker instead of crashing.
 - Feedback is immediate: each question is marked correct/incorrect with its explanation before you move on, and a final screen shows your score plus every question you missed.
 - If a quiz file is malformed (e.g. Claude's JSON wasn't quite valid), the app shows a clear validation error in the quiz picker instead of crashing.
+
+## Formula scratchpad (kaavaeditori)
+
+Every question page has a collapsed **🧮 Kaavaeditori** panel at the bottom — scrap
+paper for working out a question that needs actual calculation. Each line is a
+[MathLive](https://cortexjs.io/mathlive/) `<math-field>`: type maths and see it
+typeset as you go, press `Enter` for a new line, and click **⌨ Symbolit** for the
+symbol palette when the notation is awkward to type.
+
+- It is **scrap paper only** — nothing you write is saved to disk, scored, or shown
+  in the results. It is not the answer box.
+- Your working stays put as you move from question to question, and clears when you
+  start or retake a quiz.
+- The editor is loaded from a CDN, so this one panel needs an internet connection.
+  Offline, the rest of the app works normally and the panel says so.
