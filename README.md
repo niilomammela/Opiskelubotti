@@ -1,38 +1,37 @@
 # OpettajaBotti
 
-A small Streamlit app for turning course slide decks into self-study quizzes.
+Turn your course slide decks into self-study quizzes: Claude generates the questions, this Streamlit app plays them.
 
-## How it works
-
-1. Copy the prompt from `MASTER_PROMPT.md` into a Claude conversation, then paste/attach your slide deck.
-2. Claude outputs a quiz as a single JSON object.
-3. Save that JSON as a new file in `quizzes/` (e.g. `quizzes/cell_biology.json`).
-4. If the quiz references images, export the corresponding slide figures and save them into `quizzes/images/` under the filenames Claude specified.
-5. Run the app and pick your quiz from the dropdown.
-
-## Setup
+## Quickstart
 
 ```bash
+# one-time setup
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
-```
 
-## Run
-
-```bash
+# run the app
 .venv/bin/streamlit run app.py
 ```
 
-Then open the URL Streamlit prints (defaults to http://localhost:8501).
+Open the URL Streamlit prints (defaults to http://localhost:8501). A sample quiz (`quizzes/example_quiz.json`) is included so you can try it immediately.
+
+## Adding your own quiz
+
+1. Open `MASTER_PROMPT.md`, copy its contents into a new Claude conversation, then paste or attach your slide deck.
+2. Claude replies with a single JSON object containing the quiz.
+3. Save that JSON as a new file in `quizzes/`, e.g. `quizzes/cell_biology.json`.
+4. If the quiz needs images, export the slide figures Claude referenced and save them into `quizzes/images/` under the exact filenames it gave you.
+5. Reload the app — your new quiz appears in the dropdown.
 
 ## Project layout
 
 ```
 OpettajaBotti/
-├── MASTER_PROMPT.md   # copy-paste prompt for Claude to generate quiz JSON from slides
+├── MASTER_PROMPT.md   # prompt you give Claude to turn slides into quiz JSON
 ├── app.py             # the Streamlit quiz app
 ├── quiz_schema.py      # quiz JSON loader/validator
 ├── latex_support.py   # normalizes LaTeX delimiters for rendering
+├── quiz_schema.py     # quiz JSON loader/validator
 ├── requirements.txt
 ├── tests/             # unit tests (`.venv/bin/python -m unittest discover -s tests`)
 └── quizzes/
@@ -43,7 +42,7 @@ OpettajaBotti/
 
 ## Quiz file format
 
-Each quiz is a single JSON file. See `quizzes/example_quiz.json` for a working example, and `MASTER_PROMPT.md` for the full schema definition. Key points:
+Each quiz is one JSON file. `quizzes/example_quiz.json` is a working example; `MASTER_PROMPT.md` contains the full schema. The essentials:
 
 - `type` is `"single"` (exactly one correct option, shown as radio buttons) or `"multiple"` (two or more correct options, shown as checkboxes).
 - Option order in the file doesn't matter — the app shuffles options at runtime using true OS-level randomness (`random.SystemRandom`), not whatever order Claude wrote them in.
@@ -64,9 +63,17 @@ app renders with KaTeX:
 
 Because quizzes are JSON, backslashes must be doubled in the file: `\\frac{a}{b}` in the
 JSON renders as the fraction. See `quizzes/example_latex_quiz.json` for a working example.
+| Field | Meaning |
+|---|---|
+| `type` | `"single"` = exactly one correct option (shown as radio buttons). `"multiple"` = two or more correct options (shown as checkboxes). |
+| `options` | List of `{id, text, correct}`. Order in the file doesn't matter — the app reshuffles options at runtime using true OS-level randomness (`random.SystemRandom`), not whatever order Claude wrote them in. |
+| `image` | Optional filename under `quizzes/images/`, on a question or an individual option. |
+| `explanation` | Shown to the student right after they submit an answer. |
 
-## Notes
+## Behavior notes
 
 - Each quiz is scored with immediate per-question feedback (correct/incorrect + explanation), then a final score summary with a list of missed questions.
 - Tests live in `tests/` and run with `.venv/bin/python -m unittest discover -s tests`.
 - A malformed quiz JSON file shows a clear validation error in the app's quiz picker instead of crashing.
+- Feedback is immediate: each question is marked correct/incorrect with its explanation before you move on, and a final screen shows your score plus every question you missed.
+- If a quiz file is malformed (e.g. Claude's JSON wasn't quite valid), the app shows a clear validation error in the quiz picker instead of crashing.
