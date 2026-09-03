@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+*.pdf
+
+# Personal quiz content — keep the folder structure, ignore generated quizzes/images
+quizzes/*
+!quizzes/example_quiz.json
+!quizzes/images/
+quizzes/images/*
+!quizzes/images/.gitkeep

@@ -1,0 +1,58 @@
+{
+  "title": "Example Quiz: Cell Biology Basics",
+  "subject": "Biology",
+  "questions": [
+    {
+      "id": "q1",
+      "question": "What is the primary function of the mitochondria?",
+      "image": null,
+      "type": "single",
+      "options": [
+        {"id": "a", "text": "Producing ATP through cellular respiration", "correct": true},
+        {"id": "b", "text": "Synthesizing proteins from mRNA", "correct": false},
+        {"id": "c", "text": "Storing genetic information", "correct": false},
+        {"id": "d", "text": "Breaking down waste via digestive enzymes", "correct": false}
+      ],
+      "explanation": "Mitochondria are the primary site of ATP production via oxidative phosphorylation. Protein synthesis happens at ribosomes, DNA is stored in the nucleus, and waste breakdown is the lysosome's job."
+    },
+    {
+      "id": "q2",
+      "question": "Which of the following organelles are involved in processing and packaging proteins for secretion?",
+      "image": null,
+      "type": "multiple",
+      "options": [
+        {"id": "a", "text": "Rough endoplasmic reticulum", "correct": true},
+        {"id": "b", "text": "Golgi apparatus", "correct": true},
+        {"id": "c", "text": "Peroxisome", "correct": false},
+        {"id": "d", "text": "Centriole", "correct": false}
+      ],
+      "explanation": "The rough ER synthesizes and folds proteins, which are then modified and packaged by the Golgi apparatus before secretion. Peroxisomes handle oxidative reactions and centrioles are involved in cell division, not protein secretion."
+    },
+    {
+      "id": "q3",
+      "question": "A cell is observed to have an unusually high number of mitochondria. What is the most likely explanation?",
+      "image": null,
+      "type": "single",
+      "options": [
+        {"id": "a", "text": "The cell has a high energy demand, such as a muscle cell", "correct": true},
+        {"id": "b", "text": "The cell is preparing to undergo mitosis", "correct": false},
+        {"id": "c", "text": "The cell is a red blood cell that lacks a nucleus", "correct": false},
+        {"id": "d", "text": "The cell is dehydrated", "correct": false}
+      ],
+      "explanation": "Cells with high energy demands, like muscle or cardiac cells, tend to have more mitochondria to meet ATP requirements. Mitosis relates to chromosome duplication, not mitochondria count, and red blood cells actually lack mitochondria entirely."
+    },
+    {
+      "id": "q4",
+      "question": "Which structures are found in plant cells but not in typical animal cells?",
+      "image": null,
+      "type": "multiple",
+      "options": [
+        {"id": "a", "text": "Cell wall", "correct": true},
+        {"id": "b", "text": "Chloroplast", "correct": true},
+        {"id": "c", "text": "Nucleus", "correct": false},
+        {"id": "d", "text": "Large central vacuole", "correct": true}
+      ],
+      "explanation": "Plant cells uniquely have a cell wall, chloroplasts for photosynthesis, and a large central vacuole for storage/turgor pressure. Both plant and animal cells have a nucleus."
+    }
+  ]
+}
