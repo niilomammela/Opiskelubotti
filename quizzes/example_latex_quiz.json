@@ -1,0 +1,58 @@
+{
+  "title": "Example Quiz: Formulas with LaTeX",
+  "subject": "Mathematics",
+  "questions": [
+    {
+      "id": "q1",
+      "question": "What is the derivative $\\frac{d}{dx}\\left(x^3 - 4x\\right)$?",
+      "image": null,
+      "type": "single",
+      "options": [
+        {"id": "a", "text": "$3x^2 - 4$", "correct": true},
+        {"id": "b", "text": "$3x^2 - 4x$", "correct": false},
+        {"id": "c", "text": "$x^2 - 4$", "correct": false},
+        {"id": "d", "text": "$\\frac{x^4}{4} - 2x^2$", "correct": false}
+      ],
+      "explanation": "Differentiating term by term gives $3x^2$ from $x^3$ and $-4$ from $-4x$. The option $\\frac{x^4}{4} - 2x^2$ is the antiderivative, not the derivative."
+    },
+    {
+      "id": "q2",
+      "question": "The quadratic formula solves $ax^2 + bx + c = 0$ as\n\n$$x = \\frac{-b \\pm \\sqrt{b^2 - 4ac}}{2a}$$\n\nWhat does the discriminant $b^2 - 4ac$ tell you?",
+      "image": null,
+      "type": "single",
+      "options": [
+        {"id": "a", "text": "How many real roots the equation has", "correct": true},
+        {"id": "b", "text": "The sum of the two roots", "correct": false},
+        {"id": "c", "text": "The product of the two roots", "correct": false},
+        {"id": "d", "text": "The vertex of the parabola", "correct": false}
+      ],
+      "explanation": "A positive discriminant gives two real roots, zero gives one, and a negative value gives none. The sum of the roots is $-b/a$ and the product is $c/a$."
+    },
+    {
+      "id": "q3",
+      "question": "Which of the following identities are correct?",
+      "image": null,
+      "type": "multiple",
+      "options": [
+        {"id": "a", "text": "$\\sin^2\\theta + \\cos^2\\theta = 1$", "correct": true},
+        {"id": "b", "text": "$e^{i\\pi} + 1 = 0$", "correct": true},
+        {"id": "c", "text": "$\\log(ab) = \\log a \\cdot \\log b$", "correct": false},
+        {"id": "d", "text": "$\\int_0^1 x\\,dx = \\tfrac{1}{2}$", "correct": true}
+      ],
+      "explanation": "The Pythagorean identity, Euler's identity, and the integral are all correct. Logarithms turn products into sums: $\\log(ab) = \\log a + \\log b$."
+    },
+    {
+      "id": "q4",
+      "question": "A resistor dissipates power according to \\(P = \\frac{U^2}{R}\\). If the voltage \\(U\\) doubles, what happens to \\(P\\)?",
+      "image": null,
+      "type": "single",
+      "options": [
+        {"id": "a", "text": "It becomes four times larger", "correct": true},
+        {"id": "b", "text": "It doubles", "correct": false},
+        {"id": "c", "text": "It stays the same", "correct": false},
+        {"id": "d", "text": "It halves", "correct": false}
+      ],
+      "explanation": "Power depends on the square of the voltage, so doubling $U$ multiplies $P$ by $2^2 = 4$. This question also shows that \\(...\\) delimiters work: the app converts them to $...$ before rendering."
+    }
+  ]
+}

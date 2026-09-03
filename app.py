@@ -6,12 +6,26 @@ from pathlib import Path
 
 import streamlit as st
 
+from latex_support import normalize_latex
 from quiz_schema import QuizFormatError, list_quiz_files, load_quiz
 
 BASE_DIR = Path(__file__).parent
 QUIZZES_DIR = BASE_DIR / "quizzes"
 
 st.set_page_config(page_title="OpettajaBotti", page_icon="📝", layout="centered")
+
+# Question text is rendered as plain markdown rather than with st.subheader, so that
+# display math ($$...$$) keeps its own line instead of being squeezed into a heading.
+# This CSS gives those markdown blocks the weight a heading would have had.
+TEXT_CSS = """
+<style>
+.st-key-question_text p { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.25rem; }
+.st-key-question_text .katex { font-size: 1.15em; }
+[class*="st-key-review_q_"] p { font-weight: 600; }
+/* KaTeX defaults to a smaller size than the surrounding widget label text. */
+[data-testid="stRadio"] .katex, [data-testid="stCheckbox"] .katex { font-size: 1.1em; }
+</style>
+"""
 
 
 def resolve_image(image_name):
@@ -84,23 +98,33 @@ def render_question():
     st.progress((idx) / len(questions))
     st.caption(f"Question {idx + 1} of {len(questions)}  ·  Score: {st.session_state.score}/{idx}")
 
-    st.subheader(q["question"])
+    with st.container(key="question_text"):
+        st.markdown(normalize_latex(q["question"]))
 
     img_path = resolve_image(q.get("image"))
     if img_path:
         st.image(img_path)
 
-    option_texts = [opt["text"] for opt in q["options"]]
+    # Options are addressed by position so that two options rendering to the same
+    # label (or to LaTeX that renders identically) stay distinguishable.
+    def option_label(i):
+        return normalize_latex(q["options"][i]["text"])
 
     if not st.session_state.answered:
         if q["type"] == "single":
-            selection = st.radio("Select one answer:", option_texts, index=None, key=f"radio_{idx}")
-            selected_ids = [q["options"][option_texts.index(selection)]["id"]] if selection is not None else []
+            picked = st.radio(
+                "Select one answer:",
+                list(range(len(q["options"]))),
+                format_func=option_label,
+                index=None,
+                key=f"radio_{idx}",
+            )
+            selected_ids = [q["options"][picked]["id"]] if picked is not None else []
         else:
             st.write("Select all that apply:")
             selected_ids = []
-            for opt in q["options"]:
-                checked = st.checkbox(opt["text"], key=f"chk_{idx}_{opt['id']}")
+            for i, opt in enumerate(q["options"]):
+                checked = st.checkbox(option_label(i), key=f"chk_{idx}_{opt['id']}")
                 if checked:
                     selected_ids.append(opt["id"])
 
@@ -129,7 +153,7 @@ def render_question():
                 marker = "🟢" if q["type"] == "single" else "🟩"
             elif opt["id"] in selected_ids:
                 marker = "🔴" if q["type"] == "single" else "🟥"
-            st.write(f"{marker} {opt['text']}")
+            st.markdown(f"{marker} {normalize_latex(opt['text'])}")
 
         if is_correct:
             st.success("Correct!")
@@ -137,7 +161,7 @@ def render_question():
             st.error("Not quite.")
 
         if q.get("explanation"):
-            st.info(q["explanation"])
+            st.info(normalize_latex(q["explanation"]))
 
         is_last = idx == len(questions) - 1
         if st.button("See results" if is_last else "Next question", type="primary"):
@@ -158,9 +182,11 @@ def render_summary():
 
     if st.session_state.missed:
         st.write("### Questions to review")
-        for item in st.session_state.missed:
-            st.markdown(f"**{item['question']}**")
-            st.markdown("Correct answer(s): " + ", ".join(item["correct_texts"]))
+        for i, item in enumerate(st.session_state.missed):
+            with st.container(key=f"review_q_{i}"):
+                st.markdown(normalize_latex(item["question"]))
+            st.markdown("Correct answer(s): " + ", ".join(
+                normalize_latex(text) for text in item["correct_texts"]))
             st.divider()
     else:
         st.balloons()
@@ -183,6 +209,8 @@ def render_summary():
 
 
 def main():
+    st.markdown(TEXT_CSS, unsafe_allow_html=True)
+
     if "quiz" not in st.session_state:
         render_picker()
         return
