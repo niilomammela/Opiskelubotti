@@ -18,6 +18,7 @@ You are generating a quiz file for a self-study quiz app from a university cours
 - **Believable distractors.** Wrong options must be plausible: same category and granularity as the correct answer, drawn from real adjacent concepts in the material or common student misconceptions — not absurd, off-topic, or obviously-wrong filler. Never use "All of the above" / "None of the above" as an option. Aim for 4 options per question (minimum 3, maximum 5).
 - **No order signals.** Write the options in whatever order occurs to you — do NOT try to manually randomize or shuffle them yourself, and do NOT put the correct answer in a "safe" middle position out of habit. The app that displays these questions will re-shuffle the option order itself using true randomness, so your ordering is discarded anyway. Just focus on writing good options; order does not matter.
 - **Explanations.** For every question, write a 1-2 sentence `explanation` that clarifies why the correct option(s) are correct and, where useful, why a common wrong option is wrong. This is shown to the student after they answer.
+- **Formulas (LaTeX).** Write every mathematical expression, symbol, variable, unit-bearing quantity, or equation as LaTeX rather than plain-text ASCII — the app renders it with KaTeX. Use `$...$` for inline math (e.g. `The thermal voltage $U_T$ is about $26\\,\\mathrm{mV}$`) and `$$...$$` on its own line for a formula that deserves display on a line of its own (e.g. `$$I_D = I_S\\left(e^{U_D/(nU_T)} - 1\\right)$$`). This applies to question text, option text, and explanations alike. Remember that this is JSON: every backslash must be doubled, so `\frac` is written `\\frac` in the file. If you genuinely mean a literal dollar sign, write `\\$`.
 - **Images.** If I have separately given you slide images and a question specifically depends on a diagram/figure that can't be understood from text alone, set the question's `image` field to a filename you invent in the form `q<N>.png` (e.g. `q3.png`) and separately tell me, after the JSON, which original slide/figure that filename corresponds to so I can export and save it as `quizzes/images/q<N>.png`. If no image is needed, set `image` to `null`. Do not invent images for questions that don't need one.
 
 ## Output JSON schema (follow field names and types exactly)
@@ -48,6 +49,7 @@ Field rules:
 - `image`: `null`, or a relative filename like `"q3.png"` as described above. Options may also optionally carry their own `"image"` field the same way, if a question is "which image shows X" style — only use this if genuinely useful.
 - `options`: at least 3, at most 5 entries.
 - `explanation`: always present, 1-2 sentences.
+- LaTeX: allowed (and encouraged) anywhere in `question`, option `text`, and `explanation`, using `$...$` or `$$...$$` with doubled backslashes as described above.
 
 Now here are the slides:
 ```
@@ -57,5 +59,6 @@ Now here are the slides:
 ## Notes for you (not part of the prompt)
 - After Claude replies, save the JSON it outputs as a new file in `quizzes/`, e.g. `quizzes/cell_biology_mitochondria.json`.
 - If Claude mentions needing images, export those slide figures and save them into `quizzes/images/` under the exact filenames it specified.
+- Formulas render as real math in the app. If a formula shows up as raw text like `$\frac{a}{b}$`, the backslashes were probably not doubled in the JSON — the app also accepts `\(...\)` and `\[...\]` and converts them, so either style works.
 - If Claude ever wraps the JSON in ```json fences or adds stray text, just strip that out before saving — the app expects a plain `.json` file containing only the JSON object.
 - If you want more or fewer questions, add a line before "Now here are the slides:" such as: `Generate exactly 12 questions.`
