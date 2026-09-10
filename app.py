@@ -2,11 +2,13 @@
 
 import copy
 import random
+import uuid
 from pathlib import Path
 
 import streamlit as st
 
 from latex_support import normalize_latex
+from math_scratchpad import render_scratchpad
 from quiz_schema import QuizFormatError, list_quiz_files, load_quiz
 
 BASE_DIR = Path(__file__).parent
@@ -52,10 +54,13 @@ def start_quiz(quiz_path):
     st.session_state.answered = False
     st.session_state.missed = []
     st.session_state.last_selection = None
+    # Keys the scratchpad's browser-side storage, so each run starts blank.
+    st.session_state.scratchpad_id = uuid.uuid4().hex
 
 
 def reset_to_picker():
-    for key in ("quiz", "q_index", "score", "answered", "missed", "last_selection"):
+    for key in ("quiz", "q_index", "score", "answered", "missed", "last_selection",
+                "scratchpad_id"):
         st.session_state.pop(key, None)
 
 
@@ -169,6 +174,8 @@ def render_question():
             st.session_state.answered = False
             st.session_state.last_selection = None
             st.rerun()
+
+    render_scratchpad(st.session_state.scratchpad_id)
 
 
 def render_summary():
